@@ -20,10 +20,10 @@ jobs:
           echo "Ping $URL"
           attempt=1
           while [ $attempt -le $MAX_ATTEMPTS ]; do
-            status=$(curl -sS -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $HF_TOKEN" "$URL" || echo "000")
+            status=$(curl -sSL -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $HF_TOKEN" "$URL" || echo "000")
             echo "Attempt $attempt -> HTTP $status"
-            if [ "$status" = "200" ]; then
-              echo "✅ Space reachable (HTTP 200)."
+            if [ "$status" = "200" ] || [ "$status" = "302" ]; then
+              echo "✅ Space reachable (HTTP $status)."
               exit 0
             fi
 

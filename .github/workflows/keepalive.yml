@@ -1,15 +1,15 @@
-名字: Keep Hugging Face Space Awake (bash)
+name: Keep Hugging Face Space Awake (bash)
 
 on:
   schedule:
-    - cron: "0 * * * *"   # 每小时执行一次（整点）
+    - cron: "0 * * * *"  # 每小时执行一次
   workflow_dispatch:
 
 jobs:
   keepalive:
     runs-on: ubuntu-latest
     env:
-      URL: "https://xuemm-askjdh.hf.space/"   # <- 根据需要修改
+      URL: "https://xuemm-askjdh.hf.space/"
       MAX_ATTEMPTS: 3
       BASE_SLEEP: 5
     steps:
@@ -17,14 +17,13 @@ jobs:
         run: |
           set -euo pipefail
 
-echo “ ping $URL”
-尝试= 1
-          while while [$attempt -le $MAX_ATTEMPTS]；做 $attempt -le $MAX_ATTEMPTS ]; do
-status=$（curl -sS -o /dev
-ull -w "%{http_code}" -H "Authorization: Bearer $HF_TOKEN" "$URL" || echo "000"）: Bearer $HF_TOKEN" "$URL" || echo "000")
-            echo 返回“尝试$尝试-> HTTP $状态”
-            if 如果["$status" = "200"]；然后 "$status" = "200" ]; then
-              echo echo “✅空间可达（HTTP 200）。”
+          echo "Ping $URL"
+          attempt=1
+          while [ $attempt -le $MAX_ATTEMPTS ]; do
+            status=$(curl -sS -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $HF_TOKEN" "$URL" || echo "000")
+            echo "Attempt $attempt -> HTTP $status"
+            if [ "$status" = "200" ]; then
+              echo "✅ Space reachable (HTTP 200)."
               exit 0
             fi
 

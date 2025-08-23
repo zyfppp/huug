@@ -1,0 +1,41 @@
+name: Keep Hugging Face Space Awake (bash)
+
+on:
+  schedule:
+    - cron: "0 * * * *"  # 每小时执行一次
+  workflow_dispatch:
+
+jobs:
+  keepalive:
+    runs-on: ubuntu-latest
+    env:
+      URL: "https://zyfppp-sgg.hf.space/"
+      MAX_ATTEMPTS: 3
+      BASE_SLEEP: 5
+    steps:
+      - name: Ping Space with retries
+        run: |
+          set -euo pipefail
+
+          echo "Ping $URL"
+          attempt=1
+          while [ $attempt -le $MAX_ATTEMPTS ]; do
+            status=$(curl -sSL -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $SGG_TOKEN" "$URL" || echo "000")
+            echo "Attempt $attempt -> HTTP $status"
+            if [ "$status" = "200" ] || [ "$status" = "302" ]; then
+              echo "✅ Space reachable (HTTP $status)."
+              exit 0
+            fi
+
+            if [ $attempt -lt $MAX_ATTEMPTS ]; then
+              sleep_seconds=$(( BASE_SLEEP * attempt ))
+              echo "Waiting $sleep_seconds seconds before retry..."
+              sleep $sleep_seconds
+            fi
+            attempt=$((attempt + 1))
+          done
+
+          echo "::error::All attempts failed. Last HTTP status: $status"
+          exit 1
+        env:
+          SGG_TOKEN: ${{ secrets.SGG_TOKEN }}

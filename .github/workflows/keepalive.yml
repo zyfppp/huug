@@ -9,7 +9,7 @@ jobs:
   keepalive:
     runs-on: ubuntu-latest
     env:
-      URL: "https://pppzyf-sbb.hf.space/"
+      URL: "https://pppzyf-sss.hf.space/"
       MAX_ATTEMPTS: 3
       BASE_SLEEP: 5
     steps:
